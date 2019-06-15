@@ -1,0 +1,34 @@
+FROM ubuntu:18.04 as builder
+
+ENV ARIA2_TAG=release-1.34.0
+
+RUN apt-get update &&\
+    apt-get install git clang libssh2-1-dev libc-ares-dev libxml2-dev zlib1g-dev libsqlite3-dev pkg-config libssl-dev libexpat1-dev libxml2-dev liblzma-dev libcppunit-dev autoconf automake autotools-dev autopoint libtool -y &&\
+    update-ca-certificates &&\
+    git clone https://github.com/aria2/aria2.git &&\
+    git checkout $ARIA2_TAG &&\
+    cd aria2 &&\
+    autoreconf -i &&\
+    ./configure ARIA2_STATIC=yes --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' &&\
+    make &&\
+    make check
+
+FROM ubuntu:18.04
+
+WORKDIR /aria2
+
+VOLUME [ "/data" , "/config"]
+
+COPY --from=builder ~/aria2/src/aria2c .
+
+COPY template/config.template .
+
+EXPOSE 6800
+
+RUN apt-get update &&\
+    apt-get install gettext-base &&\
+    touch /config/aria2.session &&\
+    envsubst < config.template > aria2.conf &&\
+    cp -n aria2.conf /config/aria2.conf
+
+ENTRYPOINT [ "aria2c", "--conf-path=/config/aria2.conf" ]
