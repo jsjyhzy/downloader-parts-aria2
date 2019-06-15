@@ -23,12 +23,11 @@ COPY --from=builder /aria2/src/aria2c .
 
 COPY template/config.template .
 
+COPY startup.sh .
+
 EXPOSE 6800
 
 RUN apt-get update &&\
-    apt-get install gettext-base &&\
-    touch /config/aria2.session &&\
-    envsubst < config.template > aria2.conf &&\
-    cp -n aria2.conf /config/aria2.conf
+    apt-get install gettext-base
 
-ENTRYPOINT [ "aria2c", "--conf-path=/config/aria2.conf" ]
+ENTRYPOINT [ "bash", "startup.sh" ]
