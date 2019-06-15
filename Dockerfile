@@ -6,8 +6,8 @@ RUN apt-get update &&\
     apt-get install git clang libssh2-1-dev libc-ares-dev libxml2-dev zlib1g-dev libsqlite3-dev pkg-config libssl-dev libexpat1-dev libxml2-dev liblzma-dev libcppunit-dev autoconf automake autotools-dev autopoint libtool -y &&\
     update-ca-certificates &&\
     git clone https://github.com/aria2/aria2.git &&\
-    git checkout $ARIA2_TAG &&\
     cd aria2 &&\
+    git checkout $ARIA2_TAG &&\
     autoreconf -i &&\
     ./configure ARIA2_STATIC=yes --with-ca-bundle='/etc/ssl/certs/ca-certificates.crt' &&\
     make &&\
