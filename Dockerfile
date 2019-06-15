@@ -19,7 +19,7 @@ WORKDIR /aria2
 
 VOLUME [ "/data" , "/config"]
 
-COPY --from=builder ~/aria2/src/aria2c .
+COPY --from=builder /aria2/src/aria2c .
 
 COPY template/config.template .
 
