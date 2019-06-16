@@ -28,6 +28,6 @@ COPY startup.sh .
 EXPOSE 6800
 
 RUN apt-get update &&\
-    apt-get install gettext-base ca-certificates
+    apt-get install gettext-base ca-certificates -y
 
 ENTRYPOINT [ "bash", "startup.sh" ]
